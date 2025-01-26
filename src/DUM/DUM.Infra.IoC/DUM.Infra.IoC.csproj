@@ -6,4 +6,10 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\DUM.Application\DUM.Application.csproj" />
+      <ProjectReference Include="..\DUM.Domain\DUM.Domain.csproj" />
+      <ProjectReference Include="..\DUM.Infra.Data\DUM.Infra.Data.csproj" />
+    </ItemGroup>
+
 </Project>
