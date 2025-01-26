@@ -1,3 +1,5 @@
+using MongoDB.Driver;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+builder.Services.AddSingleton<IMongoClient>(x => new MongoClient("mongodb://reinaldosales:admin@localhost:27017/admin"));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
