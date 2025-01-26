@@ -10,4 +10,8 @@
       <ProjectReference Include="..\DUM.Domain\DUM.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Repositories\" />
+    </ItemGroup>
+
 </Project>
