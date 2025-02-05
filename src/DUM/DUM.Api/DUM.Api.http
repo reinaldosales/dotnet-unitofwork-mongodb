@@ -1,6 +1,4 @@
-@DUM.Api_HostAddress = http://localhost:5171
+@Api_HostAddress = http://localhost:5171
 
-GET {{DUM.Api_HostAddress}}/weatherforecast/
+GET {{Api_HostAddress}}/hello/
 Accept: application/json
-
-###

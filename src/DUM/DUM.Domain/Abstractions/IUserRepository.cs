@@ -4,9 +4,11 @@ namespace DUM.Domain.Abstractions;
 
 public interface IUserRepository
 {
-    Task<User> Create(User user);
+    public void Create(User user);
     
-    Task<User> Update(User user);
+    public void Update(User user);
     
-    void Delete(User user);
+    public void Delete(User user);
+
+    public Task<IEnumerable<User>> GetAll();
 }

@@ -1,3 +1,4 @@
+using DUM.Application.Abstractions;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,40 +7,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+var connectionStrings = builder.Configuration.GetConnectionString("MongoDB");
+builder.Services.AddSingleton<IMongoClient>(x => new MongoClient(connectionStrings));
+
 var app = builder.Build();
 
-builder.Services.AddSingleton<IMongoClient>(x => new MongoClient("mongodb://reinaldosales:admin@localhost:27017/admin"));
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
-{
     app.MapOpenApi();
-}
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/users", async (IUserService userService) =>
     {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
+        var users = await userService.GetAll();
+
+        return users;
     })
-    .WithName("GetWeatherForecast");
+    .WithName("Users");
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

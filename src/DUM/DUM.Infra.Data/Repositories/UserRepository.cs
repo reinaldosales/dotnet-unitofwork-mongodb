@@ -8,7 +8,7 @@ namespace DUM.Infra.Data.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly IMongoDatabase _database;
-    private readonly IMongoCollection<User> _users;
+    private readonly IMongoCollection<User> _collection;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMongoClient _mongoClient;
     
@@ -17,21 +17,31 @@ public class UserRepository : IUserRepository
         _unitOfWork = unitOfWork;
         
         this._database = _mongoClient.GetDatabase("DUM");
-        this._users = this._database.GetCollection<User>("User");
+        this._collection = this._database.GetCollection<User>("User");
     }
     
-    public Task<User> Create(User user)
+    public void Create(User user)
     {
-        throw new NotImplementedException();
+        Action operation = () => _collection.InsertOne(_unitOfWork as IClientSessionHandle, user);
+        _unitOfWork.AddOperation(operation);
     }
 
-    public Task<User> Update(User user)
+    public void Update(User user)
     {
-        throw new NotImplementedException();
+        Action operation = () => _collection.ReplaceOne(this._unitOfWork.Session as IClientSessionHandle, x => x.Id == user.Id, user);
+        _unitOfWork.AddOperation(operation);
     }
 
     public void Delete(User user)
     {
-        throw new NotImplementedException();
+        Action operation = () => _collection.DeleteOne(this._unitOfWork.Session as IClientSessionHandle, x => x.Id == user.Id);
+        this._unitOfWork.AddOperation(operation);
+    }
+
+    public async Task<IEnumerable<User>> GetAll()
+    {
+        var filter = Builders<User>.Filter.Empty;
+        
+        return await _collection.Find(filter).ToListAsync();
     }
 }
